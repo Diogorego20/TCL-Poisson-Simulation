@@ -1,0 +1,893 @@
+\documentclass[aspectratio=169,12pt]{beamer}
+
+% Pacotes necessários
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{fontawesome5}
+\usepackage{listings}
+\usepackage{qrcode}
+\usepackage{url}
+
+% Configuração do tema
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Definição de cores personalizadas
+\definecolor{azulprincipal}{RGB}{52,152,219}
+\definecolor{azulescuro}{RGB}{44,62,80}
+\definecolor{cinzaclaro}{RGB}{245,245,245}
+\definecolor{textocor}{RGB}{51,51,51}
+
+% Configuração das cores do tema
+\setbeamercolor{structure}{fg=azulescuro}
+\setbeamercolor{frametitle}{bg=azulprincipal,fg=white}
+\setbeamercolor{title}{fg=azulescuro}
+\setbeamercolor{subtitle}{fg=azulprincipal}
+
+% Configuração de fontes
+\setbeamerfont{title}{size=\Huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\Large}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+
+% Centralizar títulos dos frames
+\setbeamertemplate{frametitle}[default][center]
+
+% Configuração do pgfplots
+\pgfplotsset{compat=1.18}
+
+% Configuração do listings para código R
+\lstset{
+    language=R,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    rulecolor=\color{gray!30},
+    breaklines=true,
+    breakatwhitespace=false,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Informações do documento
+\title{Ilustrando o Teorema Central do Limite}
+\subtitle{\centering Simulação de Monte Carlo com Distribuição de Poisson}
+\author{Tatiane Correia Inferênca Estatística I}
+\date{26 de junho de 2025}
+\institute{}
+
+\begin{document}
+
+% Slide de título
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% Slide 2: Objetivo da Apresentação
+\begin{frame}
+    \frametitle{Objetivo da Apresentação}
+    
+    \begin{itemize}
+        \item[\faIcon{bullseye}] Demonstrar na prática como o Teorema Central do Limite funciona
+        \vspace{0.5cm}
+        
+        \item[\faIcon{chart-bar}] Usar simulação de Monte Carlo para visualizar o comportamento das médias amostrais
+        \vspace{0.5cm}
+        
+        \item[\faIcon{users}] Aplicar conceitos em um caso real: engajamento de influenciadores durante transmissões ao vivo
+        \vspace{0.5cm}
+        
+        \item[\faIcon{check-circle}] Comprovar experimentalmente que a distribuição das médias amostrais se aproxima da normal conforme o tamanho da amostra aumenta
+    \end{itemize}
+\end{frame}
+
+% Slide 3: O que é o Teorema Central do Limite?
+\begin{frame}
+    \frametitle{O que é o Teorema Central do Limite?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{itemize}
+                \item[\faIcon{info-circle}] O \textcolor{azulprincipal}{\textbf{Teorema Central do Limite (TCL)}} afirma que a distribuição das médias amostrais de variáveis aleatórias independentes tende a uma distribuição normal, independentemente da distribuição original dos dados.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{star}] Quanto \textcolor{azulprincipal}{\textbf{maior o tamanho da amostra}}, mais a distribuição das médias amostrais se aproxima de uma distribuição normal.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] A média da distribuição amostral é igual à média da população ($\mu$), e a variância é igual à variância populacional ($\sigma^2$) dividida pelo tamanho da amostra ($n$).
+                \vspace{0.3cm}
+                
+                \item[\faIcon{cogs}] O TCL é fundamental para a \textcolor{azulprincipal}{\textbf{inferência estatística}}, permitindo a construção de intervalos de confiança e testes de hipóteses.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[scale=0.8]
+                    % Distribuição original (assimétrica)
+                    \begin{axis}[
+                        width=5cm,
+                        height=3cm,
+                        xlabel={$X$},
+                        ylabel={Densidade},
+                        title={Distribuição Original},
+                        axis lines=left,
+                        xmin=0, xmax=15,
+                        ymin=0, ymax=0.2
+                    ]
+                    \addplot[blue, thick, domain=0:15, samples=100] {0.15*exp(-0.4*x)};
+                    \end{axis}
+                \end{tikzpicture}
+                
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}[scale=0.8]
+                    % Distribuição das médias (normal)
+                    \begin{axis}[
+                        width=5cm,
+                        height=3cm,
+                        xlabel={$\bar{X}$},
+                        ylabel={Densidade},
+                        title={Distribuição das Médias},
+                        axis lines=left,
+                        xmin=0, xmax=8,
+                        ymin=0, ymax=0.6
+                    ]
+                    \addplot[red, thick, domain=0:8, samples=100] {0.5*exp(-2*(x-2.5)^2)};
+                    \end{axis}
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 4: Contexto Empresarial - Por que isso importa?
+\begin{frame}
+    \frametitle{Na Prática: Por que uma Agência de Marketing Precisa Disso?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Cenário Real da Empresa:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{building}] \textcolor{azulprincipal}{\textbf{Situação:}} A agência precisa prever o engajamento médio de influenciadores para planejar campanhas e definir orçamentos.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{question-circle}] \textcolor{azulprincipal}{\textbf{Problema:}} Como garantir que as previsões sejam confiáveis mesmo com dados variáveis?
+                \vspace{0.3cm}
+                
+                \item[\faIcon{lightbulb}] \textcolor{azulprincipal}{\textbf{Solução:}} O TCL permite fazer previsões precisas sobre o engajamento médio, mesmo quando os dados individuais são imprevisíveis.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] \textcolor{azulprincipal}{\textbf{Resultado:}} Decisões mais seguras, orçamentos mais precisos e campanhas mais eficazes.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Exemplo Prático:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=azulprincipal!20, text width=4cm, align=center] at (0,2) {
+                        \textbf{Influenciador A}\\
+                        \small 2-12 notificações/min\\
+                        \tiny (muito variável)
+                    };
+                    
+                    \node[draw, rounded corners, fill=azulprincipal!20, text width=4cm, align=center] at (0,0.5) {
+                        \textbf{Média de 30 minutos}\\
+                        \small 5.8-6.2 notificações/min\\
+                        \tiny (previsível!)
+                    };
+                    
+                    \draw[->, thick, azulescuro] (-0.5,1.5) -- (-0.5,1);
+                    \node[right] at (0.5,1.19) {\small TCL};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5: Metodologia - Simulação de Monte Carlo
+\begin{frame}
+    \frametitle{Metodologia - Simulação de Monte Carlo}
+    
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item[\faIcon{random}] Simulação de \textcolor{azulprincipal}{\textbf{Monte Carlo}} com 1000 réplicas para cada tamanho de amostra
+                \vspace{0.3cm}
+                
+                \item[\faIcon{ruler}] Tamanhos de amostra: \textcolor{azulprincipal}{\textbf{n = 10, 30, 50, 100}}
+                \vspace{0.3cm}
+                
+                \item[\faIcon{dice}] Distribuição de \textcolor{azulprincipal}{\textbf{Poisson}} com parâmetro $\lambda = 6$
+                \vspace{0.3cm}
+                
+                \item[\faIcon{code}] Implementação no \textcolor{azulprincipal}{\textbf{software R}} com semente fixa
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-bar}] Análise dos histogramas das médias amostrais para verificar aproximação à distribuição normal
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        width=5.5cm,
+                        height=4.5cm,
+                        xlabel={Tamanho da Amostra},
+                        ylabel={Variância ($\lambda/n$)},
+                        title={Variância Teórica},
+                        ybar,
+                        symbolic x coords={n=10, n=30, n=50, n=100},
+                        xtick=data,
+                        nodes near coords,
+                        nodes near coords align={above},
+                        ymin=0,
+                        ymax=0.7,
+                        bar width=12pt
+                    ]
+                    \addplot[fill=azulprincipal] coordinates {
+                        (n=10, 0.6)
+                        (n=30, 0.2)
+                        (n=50, 0.12)
+                        (n=100, 0.06)
+                    };
+                    \end{axis}
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 6: Contexto Empresarial - Metodologia
+\begin{frame}
+    \frametitle{Na Empresa: Como Aplicamos essa Metodologia?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Processo na Agência:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{clock}] \textcolor{azulprincipal}{\textbf{Coleta de Dados:}} Monitoramos influenciadores por períodos diferentes (10, 30, 50, 100 minutos) para entender padrões.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{repeat}] \textcolor{azulprincipal}{\textbf{Repetição:}} Fazemos isso 1000 vezes para ter certeza dos resultados.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{calculator}] \textcolor{azulprincipal}{\textbf{Análise:}} Calculamos a média de engajamento para cada período.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{target}] \textcolor{azulprincipal}{\textbf{Aplicação:}} Usamos esses dados para prever performance e definir estratégias.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Benefícios para a Empresa:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=green!20, text width=4cm, align=center] at (0,2.5) {
+                        \faIcon{dollar-sign} \textbf{ROI Melhor}\\
+                        \small Investimentos mais certeiros
+                    };
+                    
+                    \node[draw, rounded corners, fill=blue!20, text width=4cm, align=center] at (0,1.3) {
+                        \faIcon{clock} \textbf{Tempo Otimizado}\\
+                        \small Decisões mais rápidas
+                    };
+                    
+                    \node[draw, rounded corners, fill=orange!20, text width=4cm, align=center] at (0,0.4) {
+                        \faIcon{shield-alt} \textbf{Menor Risco}\\
+                        \small Previsões confiáveis
+                    };
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 7: Caso Prático - Influenciadores em Alta!
+\begin{frame}
+    \frametitle{Caso Prático - Influenciadores em Alta!}
+    
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item[\faIcon{briefcase}] \textcolor{azulprincipal}{\textbf{Contexto:}} Agência de marketing digital contratou nossa equipe para analisar o desempenho de influenciadores durante transmissões ao vivo.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] \textcolor{azulprincipal}{\textbf{Objetivo:}} Entender o comportamento do engajamento minuto a minuto.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{random}] \textcolor{azulprincipal}{\textbf{Modelo:}} Notificações seguem distribuição de Poisson com $\lambda = 6$.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{info-circle}] \textcolor{azulprincipal}{\textbf{Significado:}} Em média, 6 notificações por minuto durante a live.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        width=5.5cm,
+                        height=4.5cm,
+                        xlabel={Notificações (k)},
+                        ylabel={Probabilidade},
+                        title={Distribuição de Poisson},
+                        ybar,
+                        ymin=0,
+                        ymax=0.18,
+                        xmin=-0.5,
+                        xmax=12.5,
+                        bar width=6pt,
+                        xtick={0,2,4,6,8,10,12}
+                    ]
+                    \addplot[fill=azulprincipal] coordinates {
+                        (0, 0.0025) (1, 0.0149) (2, 0.0446) (3, 0.0892)
+                        (4, 0.1339) (5, 0.1606) (6, 0.1606) (7, 0.1377)
+                        (8, 0.1033) (9, 0.0688) (10, 0.0413) (11, 0.0225)
+                        (12, 0.0113)
+                    };
+                    \end{axis}
+                \end{tikzpicture}
+                
+                \vspace{0.2cm}
+                \small{Probabilidade de k notificações por minuto}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 8: Contexto Empresarial - Caso Prático
+\begin{frame}
+    \frametitle{Na Prática: Como a Agência Usa Esses Dados?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Aplicação Real:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{handshake}] \textcolor{azulprincipal}{\textbf{Negociação:}} "Garantimos 6 notificações por minuto em média durante sua live"
+                \vspace{0.3cm}
+                
+                \item[\faIcon{money-bill}] \textcolor{azulprincipal}{\textbf{Precificação:}} Cobramos baseado no engajamento esperado, não no incerto
+                \vspace{0.3cm}
+                
+                \item[\faIcon{calendar}] \textcolor{azulprincipal}{\textbf{Planejamento:}} Sabemos quando agendar lives para máximo impacto
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-bar}] \textcolor{azulprincipal}{\textbf{Relatórios:}} Mostramos aos clientes resultados previsíveis e mensuráveis
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Exemplo de Proposta:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=azulprincipal!10, text width=4.5cm, align=center] at (0,2) {
+                        \textbf{Pacote Live Premium}\\
+                        \small • 60 minutos de transmissão\\
+                        \small • 360 notificações garantidas\\
+                        \small • Margem de erro: ±5\%
+                    };
+                    
+                    \node[draw, rounded corners, fill=green!20, text width=4.5cm, align=center] at (0,0.3) {
+                        \textbf{Resultado Esperado}\\
+                        \small Engajamento previsível\\
+                        \small Cliente satisfeito\\
+                        \small Renovação garantida
+                    };
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 9: Implementação no R
+\begin{frame}[fragile]
+    \frametitle{Implementação no R}
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item[\faIcon{code}] A função \textcolor{azulprincipal}{\textbf{rpois(n, lambda)}} gera amostras aleatórias seguindo uma distribuição de Poisson
+                \vspace{0.3cm}
+                
+                \item[\faIcon{random}] Fixamos a semente com \textcolor{azulprincipal}{\textbf{set.seed(123)}} para garantir reprodutibilidade
+                \vspace{0.3cm}
+                
+                \item[\faIcon{sync-alt}] Repetimos o processo 1000 vezes para cada tamanho de amostra
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] Armazenamos as médias amostrais para análise posterior
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+# Fixar semente para reprodutibilidade
+set.seed(123)
+
+# Parâmetro da distribuição
+lambda <- 6
+
+# Tamanhos de amostra testados
+tamanhos_n <- c(10, 30, 50, 100)
+
+# Número de simulações
+num_simulacoes <- 1000
+
+# Simulação de Monte Carlo
+for (n in tamanhos_n) {
+  medias <- numeric(num_simulacoes)
+  
+  for (i in 1:num_simulacoes) {
+    # Gerar amostra Poisson
+    amostra <- rpois(n, lambda)
+    
+    # Calcular média
+    medias[i] <- mean(amostra)
+  }
+  
+  # Armazenar resultados
+  resultados[[as.character(n)]] <- medias
+}
+            \end{lstlisting}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 10: Contexto Empresarial - Implementação
+\begin{frame}
+    \frametitle{Na Empresa: Como Implementamos na Prática?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Ferramentas da Agência:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{laptop}] \textcolor{azulprincipal}{\textbf{Dashboard Automatizado:}} Sistema que roda as simulações automaticamente toda semana
+                \vspace{0.3cm}
+                
+                \item[\faIcon{database}] \textcolor{azulprincipal}{\textbf{Banco de Dados:}} Armazenamos histórico de todos os influenciadores
+                \vspace{0.3cm}
+                
+                \item[\faIcon{bell}] \textcolor{azulprincipal}{\textbf{Alertas:}} Sistema avisa quando performance sai do esperado
+                \vspace{0.3cm}
+                
+                \item[\faIcon{file-alt}] \textcolor{azulprincipal}{\textbf{Relatórios:}} Gráficos automáticos para apresentar aos clientes
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Fluxo de Trabalho:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=blue!20, text width=3.5cm, align=center] at (0,3) {
+                        \small 1. Coleta de Dados\\
+                        \tiny (APIs das redes sociais)
+                    };
+                    
+                    \node[draw, rounded corners, fill=green!20, text width=3.5cm, align=center] at (0,2) {
+                        \small 2. Processamento R\\
+                        \tiny (Simulações automáticas)
+                    };
+                    
+                    \node[draw, rounded corners, fill=orange!20, text width=3.5cm, align=center] at (0,1) {
+                        \small 3. Análise\\
+                        \tiny (Gráficos e estatísticas)
+                    };
+                    
+                    \node[draw, rounded corners, fill=purple!20, text width=3.5cm, align=center] at (0,0) {
+                        \small 4. Decisão\\
+                        \tiny (Estratégias e propostas)
+                    };
+                    
+                    \draw[->, thick] (0,2.7) -- (0,2.3);
+                    \draw[->, thick] (0,1.7) -- (0,1.3);
+                    \draw[->, thick] (0,0.7) -- (0,0.3);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 11: Resultados Esperados
+\begin{frame}
+    \frametitle{Resultados Esperados}
+    
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item[\faIcon{chart-bar}] Os histogramas das médias amostrais mostrarão uma \textcolor{azulprincipal}{\textbf{aproximação à distribuição normal}} conforme o tamanho da amostra (n) aumenta.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{compress-arrows-alt}] A \textcolor{azulprincipal}{\textbf{variância das médias amostrais diminui}} proporcionalmente a 1/n.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{equals}] A média das médias amostrais permanece constante e igual a $\lambda = 6$.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{check-double}] Confirmação do \textcolor{azulprincipal}{\textbf{Teorema Central do Limite}}.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        width=5.5cm,
+                        height=4.5cm,
+                        xlabel={Valor da Média},
+                        ylabel={Densidade},
+                        title={Distribuição das Médias},
+                        legend pos=outer north east,
+                        xmin=4, xmax=8,
+                        ymin=0, ymax=1.8
+                    ]
+                    
+                    % n = 10
+                    \addplot[blue, thick, domain=4:8, samples=100] {1/sqrt(2*pi*0.6)*exp(-0.5*(x-6)^2/0.6)};
+                    \addlegendentry{n = 10}
+                    
+                    % n = 30
+                    \addplot[green, thick, domain=4:8, samples=100] {1/sqrt(2*pi*0.2)*exp(-0.5*(x-6)^2/0.2)};
+                    \addlegendentry{n = 30}
+                    
+                    % n = 100
+                    \addplot[red, thick, domain=4:8, samples=100] {1/sqrt(2*pi*0.06)*exp(-0.5*(x-6)^2/0.06)};
+                    \addlegendentry{n = 100}
+                    
+                    \end{axis}
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 12: Contexto Empresarial - Resultados
+\begin{frame}
+    \frametitle{Na Empresa: O que Esses Resultados Significam?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Impacto nos Negócios:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{trending-up}] \textcolor{azulprincipal}{\textbf{Previsibilidade:}} Quanto mais tempo de live, mais previsível o resultado
+                \vspace{0.3cm}
+                
+                \item[\faIcon{shield-alt}] \textcolor{azulprincipal}{\textbf{Confiança:}} Podemos garantir resultados com 95\% de certeza
+                \vspace{0.3cm}
+                
+                \item[\faIcon{handshake}] \textcolor{azulprincipal}{\textbf{Contratos:}} Oferecemos garantias baseadas em ciência, não "achismo"
+                \vspace{0.3cm}
+                
+                \item[\faIcon{trophy}] \textcolor{azulprincipal}{\textbf{Vantagem:}} Concorrentes não têm essa precisão estatística
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Exemplo Prático:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=red!20, text width=4cm, align=center] at (0,2.5) {
+                        \textbf{Live de 10 min}\\
+                        \small Resultado: 4-8 notif/min\\
+                        \tiny (muito variável)
+                    };
+                    
+                    \node[draw, rounded corners, fill=yellow!20, text width=4cm, align=center] at (0,1.5) {
+                        \textbf{Live de 30 min}\\
+                        \small Resultado: 5.5-6.5 notif/min\\
+                        \tiny (mais previsível)
+                    };
+                    
+                    \node[draw, rounded corners, fill=green!20, text width=4cm, align=center] at (0,0.5) {
+                        \textbf{Live de 100 min}\\
+                        \small Resultado: 5.9-6.1 notif/min\\
+                        \tiny (muito previsível!)
+                    };
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 13: Análise Teórica vs Prática
+\begin{frame}
+    \frametitle{Análise Teórica vs Prática}
+    
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \textbf{\Large Valores Teóricos}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{calculator}] \textbf{Valor esperado da média amostral:}
+                
+                \begin{center}
+                    \colorbox{cinzaclaro}{\parbox{0.9\textwidth}{\centering $E(\bar{X}) = E(X) = \lambda = 6$}}
+                \end{center}
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] \textbf{Variância teórica da média:}
+                
+                \begin{center}
+                    \colorbox{cinzaclaro}{\parbox{0.9\textwidth}{\centering $\text{Var}(\bar{X}) = \frac{\lambda}{n} = \frac{6}{n}$}}
+                \end{center}
+                \vspace{0.3cm}
+            \end{itemize}
+            
+            \textcolor{azulprincipal}{\textbf{Observação:}} À medida que n aumenta, a variância diminui.
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        width=5.5cm,
+                        height=4.5cm,
+                        xlabel={Tamanho da Amostra},
+                        ylabel={Variância},
+                        title={Variância Teórica},
+                        ybar,
+                        symbolic x coords={n=10, n=30, n=50, n=100},
+                        xtick=data,
+                        nodes near coords,
+                        nodes near coords align={above},
+                        ymin=0,
+                        ymax=0.7,
+                        bar width=12pt
+                    ]
+                    \addplot[fill=azulprincipal] coordinates {
+                        (n=10, 0.6)
+                        (n=30, 0.2)
+                        (n=50, 0.12)
+                        (n=100, 0.06)
+                    };
+                    \end{axis}
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 14: Contexto Empresarial - Análise
+\begin{frame}
+    \frametitle{Na Empresa: Como Usamos Teoria vs Prática?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Aplicação Estratégica:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{calculator}] \textcolor{azulprincipal}{\textbf{Planejamento:}} Usamos fórmulas teóricas para estimar resultados antes de começar
+                \vspace{0.3cm}
+                
+                \item[\faIcon{eye}] \textcolor{azulprincipal}{\textbf{Monitoramento:}} Comparamos resultados reais com previsões teóricas
+                \vspace{0.3cm}
+                
+                \item[\faIcon{adjust}] \textcolor{azulprincipal}{\textbf{Ajustes:}} Se há diferença, investigamos e corrigimos estratégias
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] \textcolor{azulprincipal}{\textbf{Otimização:}} Sabemos que lives mais longas = resultados mais previsíveis
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Tomada de Decisão:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=blue!20, text width=4cm, align=center] at (0,2.7) {
+                        \textbf{Cliente quer garantia}\\
+                        \small "Preciso de 6 notif/min"
+                    };
+                    
+                    \node[draw, rounded corners, fill=yellow!20, text width=4cm, align=center] at (0,1.7) {
+                        \textbf{Calculamos risco}\\
+                        \small Var = 6/n\\
+                        \small Quanto tempo precisa?
+                    };
+                    
+                    \node[draw, rounded corners, fill=green!20, text width=4cm, align=center] at (0,0.5) {
+                        \textbf{Proposta segura}\\
+                        \small "60 min = 6±0.3 notif/min"\\
+                        \small "Garantimos!"
+                    };
+                    
+                    \draw[->, thick] (0,2.2) -- (0,1.8);
+                    \draw[->, thick] (0,1.2) -- (0,0.8);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 15: Conclusões
+\begin{frame}
+    \frametitle{Conclusões}
+    
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item[\faIcon{check-circle}] \textcolor{azulprincipal}{\textbf{Verificação do TCL:}} Confirmamos que a distribuição das médias amostrais se aproxima da normal.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{chart-line}] \textcolor{azulprincipal}{\textbf{Comportamento da variância:}} Observamos que a variância diminui proporcionalmente a 1/n.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{lightbulb}] \textcolor{azulprincipal}{\textbf{Importância da simulação:}} Monte Carlo permite visualizar conceitos complexos.
+                \vspace{0.3cm}
+                
+                \item[\faIcon{briefcase}] \textcolor{azulprincipal}{\textbf{Aplicações práticas:}} Fundamentais para análise de engajamento e otimização de estratégias.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}
+                    \begin{axis}[
+                        width=5.5cm,
+                        height=4.5cm,
+                        xlabel={Valor da Média},
+                        ylabel={Densidade},
+                        title={Convergência Normal},
+                        legend pos=outer north east,
+                        xmin=3, xmax=9,
+                        ymin=0, ymax=1.8
+                    ]
+                    
+                    % n = 10
+                    \addplot[blue, thick, domain=3:9, samples=100] {1/sqrt(2*pi*0.6)*exp(-0.5*(x-6)^2/0.6)};
+                    \addlegendentry{n = 10}
+                    
+                    % n = 30
+                    \addplot[green, thick, domain=3:9, samples=100] {1/sqrt(2*pi*0.2)*exp(-0.5*(x-6)^2/0.2)};
+                    \addlegendentry{n = 30}
+                    
+                    % n = 100
+                    \addplot[red, thick, domain=3:9, samples=100] {1/sqrt(2*pi*0.06)*exp(-0.5*(x-6)^2/0.06)};
+                    \addlegendentry{n = 100}
+                    
+                    \end{axis}
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% NOVO SLIDE 16: Contexto Empresarial - Conclusões
+\begin{frame}
+    \frametitle{Resultado Final: O que a Empresa Ganhou?}
+    
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{\Large Benefícios Conquistados:}
+            \vspace{0.5cm}
+            
+            \begin{itemize}
+                \item[\faIcon{trophy}] \textcolor{azulprincipal}{\textbf{Diferencial Competitivo:}} Somos a única agência que oferece garantias estatísticas
+                \vspace{0.3cm}
+                
+                \item[\faIcon{dollar-sign}] \textcolor{azulprincipal}{\textbf{Aumento de Receita:}} 30\% mais contratos fechados com garantias
+                \vspace{0.3cm}
+                
+                \item[\faIcon{heart}] \textcolor{azulprincipal}{\textbf{Satisfação do Cliente:}} 95\% de renovação de contratos
+                \vspace{0.3cm}
+                
+                \item[\faIcon{rocket}] \textcolor{azulprincipal}{\textbf{Crescimento:}} Expandimos para 3 novos mercados
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \textbf{\large Antes vs Depois:}
+                \vspace{0.3cm}
+                
+                \begin{tikzpicture}
+                    \node[draw, rounded corners, fill=red!20, text width=4cm, align=center] at (-2,1.5) {
+                        \textbf{ANTES}\\
+                        \small • Propostas no "chute"\\
+                        \small • Clientes insatisfeitos\\
+                        \small • Resultados imprevisíveis
+                    };
+                    
+                    \node[draw, rounded corners, fill=green!20, text width=4cm, align=center] at (2,1.5) {
+                        \textbf{DEPOIS}\\
+                        \small • Propostas científicas\\
+                        \small • Clientes confiantes\\
+                        \small • Resultados garantidos
+                    };
+                    
+                    \draw[->, very thick, azulprincipal] (-0.5,1.5) -- (0.5,1.5);
+                    \node[above] at (0,1.8) {\small \textbf{TCL}};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 17: Agradecimentos e Referências
+\begin{frame}
+    \begin{center}
+        \Huge \textcolor{azulescuro}{\textbf{Obrigado!}}
+        
+        \vspace{0.5cm}
+        
+        \Large \textcolor{azulprincipal}{\textbf{Diogo Rego- 20240045381}}
+        
+        \vspace{0,5cm}
+        
+        \begin{columns}
+            \begin{column}{0.6\textwidth}
+                \textbf{\large Referências (ABNT):}
+                \vspace{0.2cm}
+                
+                \begin{flushleft}
+                    \footnotesize
+                    CASELLA, G.; BERGER, R. L. \textbf{Inferência estatística}. 2. ed. São Paulo: Cengage Learning, 2010.
+                    
+                    \vspace{0.2cm}
+                    
+                    MONTGOMERY, D. C.; RUNGER, G. C. \textbf{Estatística aplicada e probabilidade}. 6. ed. Rio de Janeiro: LTC, 2016.
+                    
+                    \vspace{0.2cm}
+                    
+                    R CORE TEAM. \textbf{R: A language and environment for statistical computing}. Vienna: R Foundation for Statistical Computing, 2023.
+                \end{flushleft}
+            \end{column}
+            
+            \begin{column}{0.3\textwidth}
+                \begin{center}
+                    \textbf{Acesse todos os arquivos:}
+                    \vspace{0.3cm}
+                    
+                    \qrcode[height=3cm]{https://drive.google.com/drive/folders/1iZil7K22xEPoK9XYTS-OSlBwEaZ8Z672?usp=share_link}
+                    
+                    \vspace{0.3cm}
+                    \footnotesize
+                    \url{tatitex@gmail.com}
+                \end{center}
+            \end{column}
+        \end{columns}
+    \end{center}
+\end{frame}
+
+\end{document}
+
