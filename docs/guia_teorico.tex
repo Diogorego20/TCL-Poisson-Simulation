@@ -1,0 +1,359 @@
+\documentclass[12pt,a4paper]{article}
+
+% Pacotes necessários
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+
+% Configuração da página
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Configuração do hyperref
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=red
+}
+
+% Definição de cores
+\definecolor{azulprincipal}{RGB}{52,152,219}
+\definecolor{azulescuro}{RGB}{44,62,80}
+\definecolor{verdeclaro}{RGB}{46,204,113}
+\definecolor{cinzaclaro}{RGB}{245,245,245}
+\definecolor{laranjaclaro}{RGB}{255,165,0}
+
+% Configuração do pgfplots
+\pgfplotsset{compat=1.18}
+
+% Configuração de caixas coloridas
+\newtcolorbox{definicao}{
+    colback=azulprincipal!10,
+    colframe=azulprincipal,
+    title=Definição,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{exemplo}{
+    colback=verdeclaro!10,
+    colframe=verdeclaro,
+    title=Exemplo,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{importante}{
+    colback=laranjaclaro!10,
+    colframe=laranjaclaro,
+    title=Importante,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{aplicacao}{
+    colback=cinzaclaro,
+    colframe=azulescuro,
+    title=Aplicação Prática,
+    fonttitle=\bfseries
+}
+
+% Configuração do listings para código R
+\lstset{
+    language=R,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    rulecolor=\color{gray!30},
+    breaklines=true,
+    breakatwhitespace=false,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Configuração de cabeçalho e rodapé
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Guia de Cálculos e Interpretação de Gráficos}
+\fancyhead[R]{Teorema Central do Limite}
+\fancyfoot[C]{\thepage}
+
+% Informações do documento
+\title{\textbf{GUIA EXPLICATIVO: CÁLCULOS E INTERPRETAÇÃO DE GRÁFICOS}\\
+\large Teorema Central do Limite - Simulação de Monte Carlo}
+\author{Material Didático Complementar}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+\section{Introdução}
+% ============================================================================
+
+Este documento apresenta uma explicação detalhada dos cálculos matemáticos e interpretação dos gráficos utilizados na demonstração do Teorema Central do Limite através de simulação de Monte Carlo. O material foi desenvolvido para facilitar a compreensão dos conceitos estatísticos e sua aplicação prática no contexto empresarial de marketing digital.
+
+\begin{importante}
+Este guia complementa a apresentação principal e fornece o embasamento matemático necessário para compreender completamente os resultados obtidos na simulação.
+\end{importante}
+
+% ============================================================================
+\section{Conceitos Fundamentais}
+% ============================================================================
+
+\subsection{Distribuição de Probabilidade}
+
+\begin{definicao}
+Uma \textbf{distribuição de probabilidade} descreve como os valores de uma variável aleatória estão distribuídos no espaço amostral. No contexto do nosso estudo, analisamos o número de notificações que um influenciador recebe por minuto durante uma transmissão ao vivo.
+\end{definicao}
+
+\subsection{Parâmetros Importantes}
+
+\begin{itemize}
+    \item \textbf{$\lambda$ (lambda) = 6}: Parâmetro da distribuição de Poisson
+    \begin{itemize}
+        \item Representa a \textbf{média} de notificações por minuto
+        \item Também representa a \textbf{variância} da distribuição original
+    \end{itemize}
+    
+    \item \textbf{$n$}: Tamanho da amostra
+    \begin{itemize}
+        \item $n = 10$: observamos 10 minutos e calculamos a média
+        \item $n = 30$: observamos 30 minutos e calculamos a média
+        \item $n = 50$: observamos 50 minutos e calculamos a média
+        \item $n = 100$: observamos 100 minutos e calculamos a média
+    \end{itemize}
+\end{itemize}
+
+% ============================================================================
+\section{Distribuição de Poisson}
+% ============================================================================
+
+% SEÇÃO 3.1 REMOVIDA conforme solicitado
+% SEÇÃO 3.2 REMOVIDA conforme solicitado
+
+\subsection{Propriedades da Distribuição de Poisson}
+
+Para uma distribuição de Poisson com parâmetro $\lambda$:
+\begin{itemize}
+    \item \textbf{Média}: $E[X] = \lambda = 6$
+    \item \textbf{Variância}: $\text{Var}(X) = \lambda = 6$
+    \item \textbf{Desvio Padrão}: $\sigma = \sqrt{\lambda} = \sqrt{6} \approx 2.45$
+\end{itemize}
+
+% ============================================================================
+\section{Teorema Central do Limite}
+% ============================================================================
+
+\subsection{Enunciado do Teorema}
+
+\begin{definicao}
+O \textbf{Teorema Central do Limite (TCL)} estabelece que, independentemente da forma da distribuição original, a distribuição das médias amostrais se aproxima de uma distribuição normal quando o tamanho da amostra aumenta, desde que as observações sejam independentes e identicamente distribuídas.
+\end{definicao}
+
+Matematicamente, se $X_1, X_2, \ldots, X_n$ são variáveis aleatórias independentes e identicamente distribuídas com média $\mu$ e variância $\sigma^2$, então:
+
+\begin{equation}
+\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} N(0,1) \quad \text{quando } n \to \infty
+\end{equation}
+
+onde $\bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i$ é a média amostral.
+
+\subsection{Aplicação ao Nosso Caso}
+
+No contexto do nosso estudo:
+\begin{itemize}
+    \item \textbf{Distribuição original}: Poisson($\lambda = 6$) - assimétrica
+    \item \textbf{Distribuição das médias}: Normal($\mu = 6, \sigma^2 = 6/n$) - simétrica
+    \item \textbf{Convergência}: Quanto maior $n$, mais próxima da normal
+\end{itemize}
+
+% ============================================================================
+\section{Cálculos Teóricos}
+% ============================================================================
+
+\subsection{Valor Esperado da Média Amostral}
+
+\begin{definicao}
+O valor esperado da média amostral é:
+\begin{equation}
+E[\bar{X}] = E[X] = \lambda = 6
+\end{equation}
+\end{definicao}
+
+\begin{importante}
+Este resultado é fundamental: independentemente do tamanho da amostra, a média das médias amostrais sempre será igual à média populacional ($\lambda = 6$).
+\end{importante}
+
+% SEÇÃO 4.2 REMOVIDA conforme solicitado
+
+% ============================================================================
+\section{Interpretação dos Gráficos}
+% ============================================================================
+
+\subsection{Gráfico da Distribuição de Poisson}
+
+\subsubsection{Descrição}
+Este gráfico apresenta a função de probabilidade da distribuição de Poisson com $\lambda = 6$.
+
+\subsubsection{Como Interpretar}
+\begin{itemize}
+    \item \textbf{Eixo X}: Número de notificações ($k = 0, 1, 2, \ldots, 15$)
+    \item \textbf{Eixo Y}: Probabilidade $P(X = k)$
+    \item \textbf{Barras altas}: Valores mais prováveis (5, 6, 7 notificações)
+    \item \textbf{Barras baixas}: Valores raros (0, 1, 12+ notificações)
+    \item \textbf{Formato}: Assimétrico, com cauda à direita
+\end{itemize}
+
+\begin{aplicacao}
+"Em qualquer minuto da live, é mais provável receber 6 notificações, mas pode variar de 0 a 15+. Valores entre 4-8 ocorrem em aproximadamente 70\% das vezes."
+\end{aplicacao}
+
+\subsection{Gráfico da Variância Teórica}
+
+\subsubsection{Descrição}
+Este gráfico mostra como a variância da média amostral diminui com o aumento do tamanho da amostra.
+
+\subsubsection{Como Interpretar}
+\begin{itemize}
+    \item \textbf{Eixo X}: Tamanho da amostra ($n = 10, 30, 50, 100$)
+    \item \textbf{Eixo Y}: Variância ($6/n$)
+    \item \textbf{Tendência}: Decrescimento hiperbólico
+    \item \textbf{Interpretação}: Relação inversa entre $n$ e variância
+\end{itemize}
+
+\begin{aplicacao}
+"Lives mais longas têm resultados mais previsíveis. A variância diminui proporcionalmente ao inverso do tempo de observação."
+\end{aplicacao}
+
+% SEÇÃO 6.2.2 REMOVIDA conforme solicitado
+
+\subsection{Gráfico de Convergência para a Normal}
+
+\subsubsection{Descrição}
+Gráfico de linhas mostrando as curvas normais teóricas para cada tamanho de amostra.
+
+\subsubsection{Como Interpretar}
+\begin{itemize}
+    \item \textbf{Eixo X}: Valor da média amostral
+    \item \textbf{Eixo Y}: Densidade de probabilidade
+    \item \textbf{Linha azul ($n=10$)}: Curva mais "achatada" e larga
+    \item \textbf{Linha verde ($n=30$)}: Curva mais alta e estreita
+    \item \textbf{Linha vermelha ($n=100$)}: Curva muito alta e muito estreita
+    \item \textbf{Linha vertical}: Marca $\lambda = 6$ (centro de todas as curvas)
+\end{itemize}
+
+\begin{aplicacao}
+"Este gráfico demonstra matematicamente por que lives longas são mais previsíveis. A curva vermelha ($n=100$) é muito concentrada em 6, garantindo resultados consistentes."
+\end{aplicacao}
+
+% ============================================================================
+\section{Simulação de Monte Carlo}
+% ============================================================================
+
+\subsection{Metodologia}
+
+A simulação de Monte Carlo é um método computacional que utiliza amostragem aleatória repetida para resolver problemas matemáticos complexos.
+
+% SEÇÃO 7.1.1 REMOVIDA conforme solicitado
+
+\subsection{Justificativa do Número de Simulações}
+
+\begin{importante}
+\textbf{Por que 1000 repetições?}
+
+A Lei dos Grandes Números garante que quanto mais repetições, mais próximo chegamos do valor teórico:
+\begin{itemize}
+    \item 10 repetições: Resultado impreciso
+    \item 100 repetições: Resultado razoável
+    \item 1000 repetições: Resultado muito confiável
+    \item 10000 repetições: Resultado extremamente preciso (mas computacionalmente custoso)
+\end{itemize}
+\end{importante}
+
+% ============================================================================
+\section{Análise dos Resultados}
+% ============================================================================
+
+\subsection{Tabela de Resultados da Simulação}
+
+\begin{table}[H]
+\centering
+\caption{Comparação entre Valores Teóricos e Observados}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\textbf{$n$} & \textbf{Média Teórica} & \textbf{Média Observada} & \textbf{Erro (\%)} & \textbf{Var. Teórica} & \textbf{Var. Observada} \\
+\midrule
+10  & 6.0000 & 5.9704 & 0.49 & 0.6000 & 0.5662 \\
+30  & 6.0000 & 5.9739 & 0.44 & 0.2000 & 0.2039 \\
+50  & 6.0000 & 6.0041 & 0.07 & 0.1200 & 0.1130 \\
+100 & 6.0000 & 6.0072 & 0.12 & 0.0600 & 0.0605 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Interpretação dos Resultados}
+
+\subsubsection{Convergência da Média}
+\begin{itemize}
+    \item Todas as médias observadas ficaram muito próximas de 6
+    \item Erro máximo foi de apenas 0.49\%
+    \item Confirma que $E[\bar{X}] = \lambda = 6$
+\end{itemize}
+
+\subsubsection{Comportamento da Variância}
+\begin{itemize}
+    \item Variância diminui conforme $n$ aumenta
+    \item Valores observados muito próximos dos teóricos
+    \item Confirma que $\text{Var}(\bar{X}) = \lambda/n$
+\end{itemize}
+
+\subsubsection{Verificação do TCL}
+\begin{itemize}
+    \item Histogramas mostram aproximação à normal
+    \item Quanto maior $n$, mais "normal" fica a distribuição
+    \item TCL foi verificado experimentalmente
+\end{itemize}
+
+% SEÇÃO 9 REMOVIDA conforme solicitado (Exercícios Práticos)
+% SEÇÃO 10 REMOVIDA conforme solicitado (Conclusões)
+% SEÇÃO 11 REMOVIDA conforme solicitado (Referências)
+
+\end{document}
+
